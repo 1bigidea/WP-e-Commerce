@@ -865,7 +865,7 @@ $output .= "
 }
 
 function _wpsc_buy_now_callback() {
-	global $wpsc_cart, $user_ID;
+	global $wpsc_cart, $user_ID, $paypal_url;
 
 	$paypal_url = get_option( 'paypal_multiple_url' );
 	$_POST['custom_gateway'] = 'wpsc_merchant_paypal_standard';

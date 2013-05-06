@@ -136,8 +136,10 @@ function wpsc_empty_cart() {
 	global $wpsc_cart;
 	$wpsc_cart->empty_cart( false );
 
-	$output = _wpsc_ajax_get_cart( false );
-	die( json_encode( $output ) );
+	if( defined('DOING_AJAX') && DOING_AJAX ){
+		$output = _wpsc_ajax_get_cart( false );
+		die( json_encode( $output ) );
+	}
 }
 
 add_action( 'wp_ajax_empty_cart'       , 'wpsc_empty_cart' );
