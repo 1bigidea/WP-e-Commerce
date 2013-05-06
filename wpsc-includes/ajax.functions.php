@@ -221,9 +221,10 @@ function wpsc_update_item_quantity() {
  * @return mixed                 Returns an array of output data, alternatively
  */
 function _wpsc_ajax_get_cart( $die = true, $cart_messages = array() ) {
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
-		$return = array();
+	$return = array();
+
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
 		ob_start();
 		include_once( wpsc_get_template_file_path( 'wpsc-cart_widget.php' ) );
@@ -258,11 +259,12 @@ function _wpsc_ajax_get_cart( $die = true, $cart_messages = array() ) {
 			$return['action_output'] = $action_output;
 		}
 
-		if ( $die )
-			die( $output . $action_output );
-		else
-			return $return;
 	}
+
+	if ( $die )
+		die( $output . $action_output );
+	else
+		return $return;
 }
 
 // execute on POST and GET
