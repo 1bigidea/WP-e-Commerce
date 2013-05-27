@@ -208,6 +208,10 @@ function wpsc_admin_pages() {
 			add_action( 'load-' . $page_hook, 'wpsc_admin_include_optionspage_css_and_js' );
 			break;
 
+		case $store_reports_page :
+			add_action( 'load-' . $page_hook, 'wpsc_admin_include_reportspage_css_and_js');
+			break;
+
 		case $purchase_logs_page :
 			add_action( 'admin_head', 'wpsc_product_log_rss_feed' );
 			add_action( 'load-' . $page_hook, 'wpsc_admin_include_purchase_logs_css_and_js' );
@@ -465,6 +469,33 @@ function wpsc_admin_include_optionspage_css_and_js() {
 	) );
 
 	wp_enqueue_style( 'wp-e-commerce-admin_2.7', WPSC_URL . '/wpsc-admin/css/settingspage.css', false, false, 'all' );
+	wp_enqueue_style( 'wp-e-commerce-ui-tabs', WPSC_URL . '/wpsc-admin/css/jquery.ui.tabs.css', false, $version_identifier, 'all' );
+}
+
+/**
+ * Includes and enqueues scripts and styles for the WPEC reports page
+ *
+ * @uses wp_enqueue_script()          Includes and prints out the JS for the WPEC reports page
+ * @uses wp_localize_script()         Sets up the JS vars needed
+ * @uses _wpsc_create_ajax_nonce()    Alias for wp_create_nonce, creates a random one time use token
+ * @uses get_current_tab_id()         Returns the current tab id
+ * @uses wp_enqueue_style()           Includes and prints out the CSS for the WPEC options page
+ */
+function wpsc_admin_include_reportspage_css_and_js() {
+	$version_identifier = WPSC_VERSION . "." . WPSC_MINOR_VERSION;
+	wp_enqueue_script( 'wp-e-commerce-admin-reports-page', WPSC_URL . '/wpsc-admin/js/reports-page.js', array( 'jquery-query' ), $version_identifier );
+
+	wp_localize_script( 'wp-e-commerce-admin-reports-page', 'WPSC_Reports_Page', array(
+		'navigate_reports_tab_nonce'         => _wpsc_create_ajax_nonce( 'navigate_reports_tab' ),
+		'current_tab'                         => WPSC_Reports_Page::get_instance()->get_current_tab_id(),
+		'before_unload_dialog'                => __( 'The changes you made will be lost if you navigate away from this page.', 'wpsc' ),
+		'ajax_navigate_confirm_dialog'        => __( 'The changes you made will be lost if you navigate away from this page.', 'wpsc' ) . "\n\n" . __( 'Click OK to discard your changes, or Cancel to remain on this page.' ),
+		'edit_field_options'                  => __( 'Edit Options', 'wpsc' ),
+		'hide_edit_field_options'             => __( 'Hide Options', 'wpsc' ),
+		'delete_form_set_confirm'             => __( 'Are you sure you want to delete %s? Submitted data of this form set will also be removed from sales logs.', 'wpsc' ),
+	) );
+
+	wp_enqueue_style( 'wp-e-commerce-admin_2.7', WPSC_URL . '/wpsc-admin/css/reportspage.css', false, false, 'all' );
 	wp_enqueue_style( 'wp-e-commerce-ui-tabs', WPSC_URL . '/wpsc-admin/css/jquery.ui.tabs.css', false, $version_identifier, 'all' );
 }
 
