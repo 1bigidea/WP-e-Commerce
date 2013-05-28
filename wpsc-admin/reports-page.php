@@ -204,8 +204,8 @@ final class WPSC_Reports_Page {
 	 */
 	public static function init() {
 		self::$default_tabs = array(
-			'purchase_log' => _x( 'Purchase Log', 'General reports tab in Reports->Store page', 'wpsc' ),
-			'purchase_log_export' => _x('Export', 'CSV Export of Purchase Log')
+			'purchase_log' => _x( 'Sales Log', 'List of all Sales Transactions', 'wpsc' ),
+			'purchase_log_export' => _x('Export', 'CSV Export of Sales Log')
 		);
 
 		add_action( 'wpsc_register_reports_tabs' , array( 'WPSC_Reports_Page', 'register_default_tabs'  ), 1 );
@@ -499,7 +499,7 @@ final class WPSC_Reports_Page {
 	 */
 	public function display() {
 ?>
-			<div id="wpsc_options" class="wrap">
+			<div id="wpsc_reports" class="wrap">
 				<div id="icon_card" class="icon32"></div>
 				<h2 id="wpsc-reports-page-title">
 					<?php esc_html_e( 'Store Reports', 'wpsc' ); ?>

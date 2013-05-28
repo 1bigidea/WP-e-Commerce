@@ -399,8 +399,7 @@ function wpsc_load_settings_page() {
  */
 function wpsc_load_store_reports_page(){
 	require_once( WPSC_FILE_PATH . '/wpsc-admin/includes/purchase-log-list-table-class.php' );
-	require_once( WPSC_FILE_PATH . '/wpsc-admin/display-sales-logs.php' );
-	$page = new WPSC_Purchase_Log_Page();
+//	require_once( WPSC_FILE_PATH . '/wpsc-admin/display-sales-logs.php' );
 
 	require_once('reports-page.php');
 	WPSC_Reports_Page::get_instance();

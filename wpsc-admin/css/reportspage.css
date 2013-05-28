@@ -1,3 +1,13 @@
+div#icon_card
+{
+	float: left;
+	height: 36px;
+	margin: 7px 8px 0 0;
+	width: 36px;
+	background-size: cover;
+	background: url(../../wpsc-core/images/c9-d.com_rinoa_icon_set1/report.png) no-repeat center center;
+}
+
 table#wpsc_checkout_list{
 	width:100%;
 }
@@ -97,18 +107,18 @@ tr.checkout-placeholder td {
 }
 
 /* Removed to prevent overlapping the Contextual Help tab
-#wpsc_options {
+#wpsc_reports {
 	position: relative;
 }
 */
 
-#wpsc_options a.about_this_page {
+#wpsc_reports a.about_this_page {
 	position: absolute;
 	top: 10px;
 	right: 12px;
 }
 
-#wpsc_options_page {
+#wpsc_reports_page {
 	padding: 0;
 }
 
@@ -274,18 +284,18 @@ a.nav-tab-loading {
 	color:#D54E21;
 }
 
-#wpsc_options h2 .nav-tab {
+#wpsc_reports h2 .nav-tab {
 	font-size:16px;
 	line-height:20px;
 	padding:3px 6px 3px;
 	margin-right:0;
 }
 
-#wpsc_options h2.nav-tab-wrapper {
+#wpsc_reports h2.nav-tab-wrapper {
 	padding-left:7px;
 }
 
-#wpsc_options .postbox .inside p.submit {
+#wpsc_reports .postbox .inside p.submit {
 	margin-top:5px;
 	padding:0;
 }
@@ -329,7 +339,7 @@ a.nav-tab-loading {
 	width:100%;
 }
 
-#wpsc_options .wpsc-shipping-module-settings-tablerate .postbox .inside .submit, #wpsc_options .wpsc-shipping-module-settings-weightrate .postbox .inside .submit {
+#wpsc_reports .wpsc-shipping-module-settings-tablerate .postbox .inside .submit, #wpsc_reports .wpsc-shipping-module-settings-weightrate .postbox .inside .submit {
 	padding:0 10px 0 20px;
 }
 
@@ -338,16 +348,16 @@ a.nav-tab-loading {
 	margin-right:10px;
 }
 
-#wpsc_options .action {
+#wpsc_reports .action {
 	display:none;
 }
 
-.js #wpsc_options .js-warning {
+.js #wpsc_reports .js-warning {
 	display:none;
 }
 
-.js #wpsc_options .wpsc-shipping-module-settings-tablerate td .action,
-.js #wpsc_options .wpsc-shipping-module-settings-weightrate td .action,
+.js #wpsc_reports .wpsc-shipping-module-settings-tablerate td .action,
+.js #wpsc_reports .wpsc-shipping-module-settings-weightrate td .action,
 .js #wpsc_checkout_list .action {
 	background-image:url(plus-minus.png);
 	background-repeat:no-repeat;
@@ -358,8 +368,8 @@ a.nav-tab-loading {
 	width:20px;
 }
 
-.js #wpsc_options .wpsc-shipping-module-settings-tablerate td span.action,
-.js #wpsc_options .wpsc-shipping-module-settings-weightrate td span.action,
+.js #wpsc_reports .wpsc-shipping-module-settings-tablerate td span.action,
+.js #wpsc_reports .wpsc-shipping-module-settings-weightrate td span.action,
 .js #wpsc_checkout_list span.action {
 	opacity:0.3;
 }
