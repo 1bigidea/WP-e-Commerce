@@ -16,6 +16,7 @@ require_once( WPSC_FILE_PATH . '/wpsc-admin/includes/display-items-functions.php
 require_once( WPSC_FILE_PATH . '/wpsc-admin/includes/product-functions.php' );
 require_once( WPSC_FILE_PATH . '/wpsc-admin/includes/save-data.functions.php' );
 require_once( WPSC_FILE_PATH . '/wpsc-admin/includes/updating-functions.php' );
+require_once( WPSC_FILE_PATH . '/wpsc-admin/includes/class.product-edit.form.php');
 require_once( WPSC_FILE_PATH . '/wpsc-admin/display-coupons.php' );
 require_once( WPSC_FILE_PATH . '/wpsc-includes/purchaselogs.class.php' );
 require_once( WPSC_FILE_PATH . '/wpsc-includes/theming.class.php' );
@@ -402,6 +403,8 @@ function wpsc_product_log_rss_feed() {
 	echo "<link type='application/rss+xml' href='" . add_query_arg( array( 'rss' => 'true', 'rss_key' => 'key', 'action' => 'purchase_log', 'type' => 'rss' ), admin_url( 'index.php' ) ) . "' title='" . esc_attr( 'WP e-Commerce Purchase Log RSS', 'wpsc' ) . "' rel='alternate' />";
 }
 
+include_once('display-product-add_edit.php');
+
 /**
  * Includes and enqueues scripts and styles for coupons
  *
@@ -457,40 +460,6 @@ function wpsc_admin_include_optionspage_css_and_js() {
 	wp_enqueue_style( 'wp-e-commerce-admin_2.7', WPSC_URL . '/wpsc-admin/css/settingspage.css', false, false, 'all' );
 	wp_enqueue_style( 'wp-e-commerce-ui-tabs', WPSC_URL . '/wpsc-admin/css/jquery.ui.tabs.css', false, $version_identifier, 'all' );
 }
-
-/**
- * Sets up the WPEC metaboxes
- *
- * @uses remove_meta_box()    Removes the default taxonomy meta box so our own can be added
- * @uses add_meta_bax()       Adds metaboxes to the WordPress admin interface
- */
-function wpsc_meta_boxes() {
-	global $post;
-	$pagename = 'wpsc-product';
-	remove_meta_box( 'wpsc-variationdiv', 'wpsc-product', 'side' );
-
-	//if a variation page do not show these metaboxes
-	if ( is_object( $post ) && $post->post_parent == 0 ) {
-		add_meta_box( 'wpsc_product_variation_forms'    , __( 'Variations', 'wpsc' )           , 'wpsc_product_variation_forms'    , $pagename, 'normal', 'high' );
-		add_meta_box( 'wpsc_product_external_link_forms', __( 'Off Site Product link', 'wpsc' ), 'wpsc_product_external_link_forms', $pagename, 'normal', 'high' );
-	} else if( is_object( $post ) && $post->post_status == "inherit" ) {
-		remove_meta_box( 'tagsdiv-product_tag'             , 'wpsc-product', 'core' );
-		remove_meta_box( 'wpsc_product_external_link_forms', 'wpsc-product', 'core' );
-		remove_meta_box( 'wpsc_product_categorydiv'        , 'wpsc-product', 'core' );
-	}
-
-	add_meta_box( 'wpsc_price_control_forms', __('Price Control', 'wpsc'), 'wpsc_price_control_forms', $pagename, 'side', 'low' );
-	add_meta_box( 'wpsc_stock_control_forms', __('Stock Control', 'wpsc'), 'wpsc_stock_control_forms', $pagename, 'side', 'low' );
-	add_meta_box( 'wpsc_product_taxes_forms', __('Taxes', 'wpsc'), 'wpsc_product_taxes_forms', $pagename, 'side', 'low' );
-	add_meta_box( 'wpsc_additional_desc', __('Additional Description', 'wpsc'), 'wpsc_additional_desc', $pagename, 'normal', 'high' );
-	add_meta_box( 'wpsc_product_download_forms', __('Product Download', 'wpsc'), 'wpsc_product_download_forms', $pagename, 'normal', 'high' );
-	add_meta_box( 'wpsc_product_image_forms', __('Product Images', 'wpsc'), 'wpsc_product_image_forms', $pagename, 'normal', 'high' );
-	if ( ! empty( $post->ID ) && ! wpsc_product_has_variations( $post->ID ) )
-		add_meta_box( 'wpsc_product_shipping_forms', __('Shipping', 'wpsc'), 'wpsc_product_shipping_forms_metabox', $pagename, 'normal', 'high' );
-	add_meta_box( 'wpsc_product_advanced_forms', __('Advanced Settings', 'wpsc'), 'wpsc_product_advanced_forms', $pagename, 'normal', 'high' );
-}
-add_action( 'admin_footer', 'wpsc_meta_boxes' );
-add_action( 'admin_enqueue_scripts', 'wpsc_admin_include_css_and_js_refac' );
 
 /**
  * Includes the JS and CSS
@@ -589,6 +558,7 @@ function wpsc_admin_include_css_and_js_refac( $pagehook ) {
 	if ( 'dashboard_page_wpsc-upgrades' == $pagehook || 'dashboard_page_wpsc-update' == $pagehook )
 		wp_enqueue_style( 'wp-e-commerce-admin', WPSC_URL . '/wpsc-admin/css/admin.css', false, $version_identifier, 'all' );
 }
+add_action( 'admin_enqueue_scripts', 'wpsc_admin_include_css_and_js_refac' );
 
 /**
  * @todo docs
