@@ -48,7 +48,7 @@ return;
 
 function wpsc_product_pricing_metabox(){
 
-	$product_pricing = new WPEC_MetaBox('wpsc_price_control_form', array(
+	$product_pricing = new WPEC_MetaBox('wpsc-product', 'wpsc_price_control_form', array(
 		'metabox_title'	=> __('Product Pricing', 'wpsc'),
 		'location'	=> array('side', 'high'),
 		'title_callback'	=> 'wpsc_product_pricing_metabar'
@@ -75,23 +75,23 @@ function wpsc_product_pricing_metabox(){
 		->set_label( __('Purchase is a donation', 'wpsc'));
 }
 
-function wpsc_product_pricing_metabar($title){
-	return '<em><del>$12.34</del>&nbsp;$11.11</em>';
-}
+		function wpsc_product_pricing_metabar($title){
+			return '<em><del>$12.34</del>&nbsp;$11.11</em>';
+		}
 
-function wpsc_price_alt_currencies(){
+		function wpsc_price_alt_currencies(){
 
-}
+		}
 
-function wpsc_price_qty_discounts(){
-}
+		function wpsc_price_qty_discounts(){
+		}
 
 /**
  *	Product Inventory Metabox
  */
 function wpsc_product_inventory_metabox(){
 
-	$stock_inventory = new WPEC_MetaBox('wpsc_stock_control_forms');
+	$stock_inventory = new WPEC_MetaBox('wpsc-product', 'wpsc_stock_control_forms');
 	$stock_inventory->set_metabox_title( __('Stock Inventory', 'wpsc') )
 		->set_location( 'side', 'low')
 		->set_callback('wpsc_inventory_metabar');
@@ -116,7 +116,7 @@ function wpsc_product_inventory_metabox(){
 
 function wpsc_product_tax_metabox(){
 
-	$product_tax = new WPEC_MetaBox('wpsc_product_taxes_forms');
+	$product_tax = new WPEC_MetaBox('wpsc-product', 'wpsc_product_taxes_forms');
 	$product_tax->set_metabox_title( __('Sales Tax', 'wpsc') )
 		->set_location('side', 'low')
 		->set_callback('wpsc_product_tax_metabar');
@@ -132,7 +132,7 @@ function wpsc_product_tax_metabox(){
 
 function wpsc_product_delivery_metabox(){
 
-	$product_delivery = new WPEC_MetaBox('wpsc_product_delivery_forms');
+	$product_delivery = new WPEC_MetaBox('wpsc-product', 'wpsc_product_delivery_forms');
 		$product_delivery->metabox_title( __('Product Delivery', 'wpsc') )
 			->set_location('normal', 'high')
 			->set_callback('wpsc_delivery_metabar');
@@ -190,7 +190,7 @@ function wpsc_product_delivery_metabox(){
  */
 function wpsc_product_details_metabox(){
 
-	$product_details = new WPEC_MetaBox('wpsc_product_details_forms');
+	$product_details = new WPEC_MetaBox('wpsc-product', 'wpsc_product_details_forms');
 	$product_details->set_metabox_title( __('Product Details', 'wpsc') )
 		->set_location('normal', 'high')
 		->set_callback('wpsc_detail_metabar');

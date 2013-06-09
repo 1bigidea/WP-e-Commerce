@@ -4,9 +4,10 @@ class WPEC_MetaBox {
 
 	private $panels = array();
 
-	function __construct($box_name, $args){
+	function __construct($post_type, $box_name, $args){
 
 		$this->box_name = $box_name;
+		$this->post_type = $post_type;
 
 		foreach($args as $arg => $arg_value){
 			$meth = 'set_'.$arg;
@@ -20,7 +21,7 @@ class WPEC_MetaBox {
 		if( !empty($metabar_info) )
 			$title .= '<span class="metabar_info">'.$metabar_info.'</span>';
 
-		add_meta_box($box_name, $title, array($this, 'render_metabox'), 'wpsc-product', $this->context, $this->priority);
+		add_meta_box($box_name, $title, array($this, 'render_metabox'), $this->post_type, $this->context, $this->priority);
 		add_filter("postbox_classes_{$pagename}_{$box_name}", array($this, 'add_postbox_classes') );
 
 		$this->add_panel('default');
