@@ -359,7 +359,7 @@ function wpsc_register_post_types() {
 		'menu_icon'            => WPSC_CORE_IMAGES_URL . "/credit_cards.png",
 		'labels'               => $labels,
 		'query_var'            => true,
-		'register_meta_box_cb' => 'wpsc_meta_boxes',
+		'register_meta_box_cb' => 'wpsc_setup_product_editor_meta_boxes',
 		'rewrite'              => array(
 			'slug'       => str_replace( basename( home_url() ), '', $wpsc_page_titles['products'] ) . '/%wpsc_product_category%',
 			'with_front' => false
@@ -453,6 +453,20 @@ function wpsc_register_post_types() {
 	$args = apply_filters( 'wpsc_register_taxonomies_product_variation_args', $args );
 	// Product Variations, is internally heirarchical, externally, two separate types of items, one containing the other
 	register_taxonomy( 'wpsc-variation', 'wpsc-product', $args );
+
+// 	register_taxonomy( 'wpec_post_format', 'wpsc-product', array(
+// 		'public' => true,
+// 		'hierarchical' => false,
+// 		'labels' => array(
+// 			'name' => _x( 'Product Type', 'post format' ),
+// 			'singular_name' => _x( 'Product Type', 'post format' ),
+// 		),
+// 		'query_var' => true,
+// 		'rewrite' => array('slug' => 'type'),
+// 		'show_ui' => false,
+// 		'_builtin' => true,
+// 		'show_in_nav_menus' => current_theme_supports( 'post-formats' ),
+// 	) );
 
 	do_action( 'wpsc_register_post_types_after' );
 	do_action( 'wpsc_register_taxonomies_after' );
