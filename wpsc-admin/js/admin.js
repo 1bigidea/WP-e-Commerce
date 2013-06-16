@@ -158,6 +158,9 @@
 })(jQuery);
 
 jQuery(document).ready(function(){
+
+	jQuery('.wpec-metabox-tabs').tabs();
+
 	jQuery('td.hidden_alerts img').each(function(){
 		var t = jQuery(this);
 		t.appendTo(t.parents('tr').find('td.column-title strong'));
