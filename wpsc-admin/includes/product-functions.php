@@ -7,39 +7,38 @@
  */
 
 function wpsc_get_max_upload_size(){
-	return wp_convert_bytes_to_hr( wp_max_upload_size() );
+	return size_format( wp_max_upload_size() );
 }
 
 /**
-* wpsc_admin_submit_product function
-* @internal Was going to completely refactor sanitise forms and wpsc_insert_product, but they are also used by the import system
+ * wpsc_admin_submit_product function
+ *
+ * Executed when Product Edit is submitted
+ *
+ * @internal Was going to completely refactor sanitise forms and wpsc_insert_product, but they are also used by the import system
  * which I'm not really familiar with...so I'm not touching them :)  Erring on the side of redundancy and caution I'll just
  * refactor this to do the job.
-* @return nothing
+ *
+ * @param   int $post_ID ID of the post being edited
+ * @param   array   $post contents of the post record saved
+ * @return nothing
 */
 function wpsc_admin_submit_product( $post_ID, $post ) {
-	global $wpdb;
 
 	$current_screen = get_current_screen();
-
+kickout('wpsc_admin_submit_product', $post, $_POST);
 	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || empty( $current_screen ) || $current_screen->id != 'wpsc-product' || $post->post_type != 'wpsc-product' || empty( $_POST['meta'] ) )
 		return $post_ID;
 
     //Type-casting ( not so much sanitization, which would be good to do )
     $post_data = stripslashes_deep( $_POST );
+
     $product_id = $post_ID;
+
+    $post_data = apply_filters( 'wpsc_admin_submit_product', $post_data, $product_id ); // This is where functions should hook for sanitation
+
 	$post_data['additional_description'] = isset($post_data['additional_description']) ? $post_data['additional_description'] : '';
-    $post_meta['meta'] = (array)$_POST['meta'];
-	if ( isset( $post_data['meta']['_wpsc_price'] ) )
-		$post_data['meta']['_wpsc_price'] = wpsc_string_to_float( $post_data['meta']['_wpsc_price'] );
-	if ( isset( $post_data['meta']['_wpsc_special_price'] ) )
-		$post_data['meta']['_wpsc_special_price'] = wpsc_string_to_float( $post_data['meta']['_wpsc_special_price'] );
-	if($post_data['meta']['_wpsc_sku'] == __('N/A', 'wpsc'))
-		$post_data['meta']['_wpsc_sku'] = '';
-	if( isset( $post_data['meta']['_wpsc_is_donation'] ) )
-		$post_data['meta']['_wpsc_is_donation'] = 1;
-	else
-		$post_data['meta']['_wpsc_is_donation'] = 0;
+
 	if ( ! isset( $post_data['meta']['_wpsc_limited_stock'] ) ){
 		$post_data['meta']['_wpsc_stock'] = false;
 	} else {
@@ -50,13 +49,15 @@ function wpsc_admin_submit_product( $post_ID, $post ) {
 	if(!isset($post_data['meta']['_wpsc_product_metadata']['notify_when_none_left'])) $post_data['meta']['_wpsc_product_metadata']['notify_when_none_left'] = 0;
 	if(!isset($post_data['meta']['_wpsc_product_metadata']['unpublish_when_none_left'])) $post_data['meta']['_wpsc_product_metadata']['unpublish_when_none_left'] = '';
     if(!isset($post_data['quantity_limited'])) $post_data['quantity_limited'] = '';
-    if(!isset($post_data['special'])) $post_data['special'] = '';
-    if(!isset($post_data['meta']['_wpsc_product_metadata']['no_shipping'])) $post_data['meta']['_wpsc_product_metadata']['no_shipping'] = '';
 
 	$post_data['meta']['_wpsc_product_metadata']['notify_when_none_left'] = (int)(bool)$post_data['meta']['_wpsc_product_metadata']['notify_when_none_left'];
 	$post_data['meta']['_wpsc_product_metadata']['unpublish_when_none_left'] = (int)(bool)$post_data['meta']['_wpsc_product_metadata']['unpublish_when_none_left'];
 	$post_data['meta']['_wpsc_product_metadata']['quantity_limited'] = (int)(bool)$post_data['quantity_limited'];
-	$post_data['meta']['_wpsc_product_metadata']['special'] = (int)(bool)$post_data['special'];
+
+    if(!isset($post_data['special'])) $post_data['special'] = '';
+    if(!isset($post_data['meta']['_wpsc_product_metadata']['no_shipping'])) $post_data['meta']['_wpsc_product_metadata']['no_shipping'] = '';
+
+    $post_data['meta']['_wpsc_product_metadata']['special'] = (int)(bool)$post_data['special'];
 	$post_data['meta']['_wpsc_product_metadata']['no_shipping'] = (int)(bool)$post_data['meta']['_wpsc_product_metadata']['no_shipping'];
 
 	// Product Weight
@@ -79,24 +80,9 @@ function wpsc_admin_submit_product( $post_ID, $post ) {
 		}
 	}
 
-	// table rate price
-	$post_data['meta']['_wpsc_product_metadata']['table_rate_price'] = isset( $post_data['table_rate_price'] ) ? $post_data['table_rate_price'] : array();
-
-	// if table_rate_price is unticked, wipe the table rate prices
-	if ( empty( $post_data['table_rate_price']['state'] ) ) {
-		$post_data['meta']['_wpsc_product_metadata']['table_rate_price']['table_price'] = array();
-		$post_data['meta']['_wpsc_product_metadata']['table_rate_price']['quantity'] = array();
-	}
-
-	if ( ! empty( $post_data['meta']['_wpsc_product_metadata']['table_rate_price']['table_price'] ) ) {
-		foreach ( (array) $post_data['meta']['_wpsc_product_metadata']['table_rate_price']['table_price'] as $key => $value ){
-			if(empty($value)){
-				unset($post_data['meta']['_wpsc_product_metadata']['table_rate_price']['table_price'][$key]);
-				unset($post_data['meta']['_wpsc_product_metadata']['table_rate_price']['quantity'][$key]);
-			}
-		}
-	}
-
+    /**
+     *  Update Shipping Rates
+     */
 	if ( isset( $post_data['meta']['_wpsc_product_metadata']['shipping'] ) ) {
 		$post_data['meta']['_wpsc_product_metadata']['shipping']['local'] = wpsc_string_to_float( $post_data['meta']['_wpsc_product_metadata']['shipping']['local'] );
 		$post_data['meta']['_wpsc_product_metadata']['shipping']['international'] = wpsc_string_to_float( $post_data['meta']['_wpsc_product_metadata']['shipping']['international'] );

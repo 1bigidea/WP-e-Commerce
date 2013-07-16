@@ -1,0 +1,11 @@
+/**
+ *	Product Edit Page-specific customization
+ */
+
+.fieldset-product_price div {
+	width: 50%;
+	float: left;
+}
+	.fieldset-product_price div label {
+		display: block;
+	}
