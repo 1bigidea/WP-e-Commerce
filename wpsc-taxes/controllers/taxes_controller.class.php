@@ -31,6 +31,16 @@ class wpec_taxes_controller {
 	} // wpec_taxes_isincluded
 
 	/**
+	* @description: wpec_taxes_item_isexempt - returns true or false depending
+	*                                      on whether or not this item is tax-exempt
+	* @param: void
+	* @return: boolean true or false
+	* */
+	function wpec_taxes_item_isexempt( $cart_item ) {
+		return ( isset( $cart_item->meta[0]['wpec_taxes_taxable'] ) && 'on' == $cart_item->meta[0]['wpec_taxes_taxable'] );
+	}// wpec_taxes_item_isexempt
+
+	/**
 	* @description: wpec_taxes_calculate_total - takes into account all tax logic
 	*                   settings and returns the calculated total tax.
 	*                   Expects wpsc_cart to be set.
@@ -145,17 +155,21 @@ class wpec_taxes_controller {
 	function wpec_taxes_calculate_excluded_tax( $cart_item, $tax_rate ) {
 		$returnable = false;
 
-		//do not calculate tax for this item if it is not taxable
-			if ( ! isset( $cart_item->meta[0]['wpec_taxes_taxable'] ) ) {
-				if ( $this->wpec_taxes_run_logic() ) {
+		// calculate tax for this item unless it is tax-exempt
+		if ( ! $this->wpec_taxes_item_isexempt( $cart_item ) ) {
+
+			if ( $this->wpec_taxes_run_logic() ) {
+
 				//get the taxable amount
 				if ( isset( $cart_item->meta[0]['wpec_taxes_taxable_amount'] ) && ! empty( $cart_item->meta[0]['wpec_taxes_taxable_amount'] ) ) {
 					//if there is a taxable amount defined for this product use this to calculate taxes
 					$taxable_amount = $cart_item->meta[0]['wpec_taxes_taxable_amount'];
 				} else {
+
 					// there is no taxable amount found - use the unit price
 					$taxable_amount = $cart_item->unit_price;
 				}
+
 				// get the taxable price - unit price multiplied by qty
 				$taxable_price = $taxable_amount * $cart_item->quantity;
 
@@ -178,9 +192,12 @@ class wpec_taxes_controller {
 	function wpec_taxes_calculate_included_tax( $cart_item ) {
 		global $wpsc_cart;
 		$returnable = false;
-		//do not calculate tax for this item if it is not taxable
-		if ( ! isset( $cart_item->meta[0]['wpec_taxes_taxable'] ) ) {
+
+		// calculate tax for this item unless it is tax-exempt
+		if ( ! $this->wpec_taxes_item_isexempt( $cart_item ) ) {
+
 			if ( $this->wpec_taxes_run_logic() ) {
+
 				$wpec_base_country = $this->wpec_taxes_retrieve_selected_country();
 				$region = $this->wpec_taxes_retrieve_region();
 
