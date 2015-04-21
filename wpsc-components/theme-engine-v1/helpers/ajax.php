@@ -84,6 +84,8 @@ function wpsc_special_widget() {
 /**
  * add_to_cart function, used through ajax and in normal page loading.
  * No parameters, returns nothing
+ *
+ * @uses wpsc_get_product_id_from_variations()              Given array of variation selections returns the variation product id as int
  */
 function wpsc_add_to_cart() {
 	global $wpsc_cart;
@@ -118,17 +120,9 @@ function wpsc_add_to_cart() {
 	}
 
 	if ( isset( $_POST['variation'] ) ) {
-
-		foreach ( (array) $_POST['variation'] as $key => $variation ) {
-			$provided_parameters['variation_values'][ (int) $key ] = (int) $variation;
-		}
-
-		if ( count( $provided_parameters['variation_values'] ) > 0 ) {
-			$variation_product_id = wpsc_get_child_object_in_terms( $product_id, $provided_parameters['variation_values'], 'wpsc-variation' );
-			if ( $variation_product_id > 0 ) {
-				$product_id = $variation_product_id;
-			}
-		}
+		$return_variation_params                 = wpsc_get_product_data_from_variations( $_POST['variation'], $product_id );
+		$product_id                              = $return_variation_params['product_id'];
+		$provided_parameters['variation_values'] = $return_variation_params['variation_values'];
 	}
 
 	if ( (isset( $_POST['quantity'] ) && $_POST['quantity'] > 0) && (!isset( $_POST['wpsc_quantity_update'] )) ) {
@@ -219,7 +213,7 @@ function wpsc_add_to_cart_button( $product_id, $return = false ) {
 		?>
 			<div class='wpsc-add-to-cart-button'>
 				<form class='wpsc-add-to-cart-button-form' id='product_<?php echo esc_attr( $product_id ) ?>' action='' method='post'>
-					<?php do_action( 'wpsc_add_to_cart_button_form_begin' ); ?>
+					<?php do_action( 'wpsc_add_to_cart_button_form_begin', $product_id ); ?>
 					<div class='wpsc_variation_forms'>
 						<?php while ( wpsc_have_variation_groups() ) : wpsc_the_variation_group(); ?>
 							<p>
@@ -235,7 +229,7 @@ function wpsc_add_to_cart_button( $product_id, $return = false ) {
 					<input type='hidden' name='wpsc_ajax_action' value='add_to_cart' />
 					<input type='hidden' name='product_id' value='<?php echo $product_id; ?>' />
 					<input type='submit' id='product_<?php echo $product_id; ?>_submit_button' class='wpsc_buy_button' name='Buy' value='<?php echo __( 'Add To Cart', 'wpsc' ); ?>'  />
-					<?php do_action( 'wpsc_add_to_cart_button_form_end' ); ?>
+					<?php do_action( 'wpsc_add_to_cart_button_form_end', $product_id ); ?>
 				</form>
 			</div>
 		<?php
@@ -1015,7 +1009,7 @@ function _wpsc_get_alternate_html( $cart_messages ) {
 
 	$javascript = wp_remote_retrieve_body(
 		wp_remote_post(
-			add_query_arg( array( 'wpsc_action' => 'wpsc_get_alternate_html', 'ajax' => 'true', 'wpsc_ajax_action' => 'add_to_cart' ), home_url() ),
+			esc_url_raw( add_query_arg( array( 'wpsc_action' => 'wpsc_get_alternate_html', 'ajax' => 'true', 'wpsc_ajax_action' => 'add_to_cart' ), home_url() ),
 			array(
 				'body' =>
 					array(
@@ -1025,7 +1019,7 @@ function _wpsc_get_alternate_html( $cart_messages ) {
 				'cookies'    => $cookies,
 				'user-agent' => $_SERVER['HTTP_USER_AGENT']
 			)
-		)
+		) )
 	);
 	return $javascript;
 }

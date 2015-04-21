@@ -3,7 +3,7 @@
   * Plugin Name: WP eCommerce
   * Plugin URI: http://wpecommerce.org/
   * Description: A plugin that provides a WordPress Shopping Cart. See also: <a href="http://wpecommerce.org" target="_blank">WPeCommerce.org</a> | <a href="https://wordpress.org/support/plugin/wp-e-commerce/" target="_blank">Support Forum</a> | <a href="http://docs.wpecommerce.org/" target="_blank">Documentation</a>
-  * Version: 3.9.2
+  * Version: 3.9.3
   * Author: WP eCommerce
   * Author URI: http://wpecommerce.org/
   **/
@@ -26,7 +26,7 @@ class WP_eCommerce {
 	 * Start WPEC on plugins loaded
 	 *
 	 * @uses add_action()   Attaches to 'plugins_loaded' hook
-	 * @uses add_action()   Attaches to 'wpsc_components' hook
+	 * @uses add_filter()   Attaches to 'wpsc_components' hook
 	 */
 	public function __construct() {
 		add_action( 'plugins_loaded' , array( $this, 'init' ), 8 );
@@ -248,7 +248,7 @@ class WP_eCommerce {
 		// Load the purchase log statuses
 		wpsc_core_load_purchase_log_statuses();
 
-		// Load unique names and checout form types
+		// Load unique names and checkout form types
 		wpsc_core_load_checkout_data();
 
 		// Load the gateways
