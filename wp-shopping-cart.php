@@ -3,7 +3,7 @@
   * Plugin Name: WP eCommerce
   * Plugin URI: http://wpecommerce.org/
   * Description: A plugin that provides a WordPress Shopping Cart. See also: <a href="http://wpecommerce.org" target="_blank">WPeCommerce.org</a> | <a href="https://wordpress.org/support/plugin/wp-e-commerce/" target="_blank">Support Forum</a> | <a href="http://docs.wpecommerce.org/" target="_blank">Documentation</a>
-  * Version: 3.9.3
+  * Version: 4.0-dev
   * Author: WP eCommerce
   * Author URI: http://wpecommerce.org/
   **/
@@ -119,8 +119,15 @@ class WP_eCommerce {
 		do_action( 'wpsc_started' );
 	}
 
+	/**
+	 * Sets table names as WPDB properties.
+	 *
+	 * @since  4.0
+	 * @return array Array of custom tables
+	 */
 	public function setup_table_names() {
 		global $wpdb;
+
 		$wpdb->wpsc_meta                = WPSC_TABLE_META;
 		$wpdb->wpsc_also_bought         = WPSC_TABLE_ALSO_BOUGHT;
 		$wpdb->wpsc_region_tax          = WPSC_TABLE_REGION_TAX;
@@ -137,6 +144,27 @@ class WP_eCommerce {
 		$wpdb->wpsc_purchasemeta        = WPSC_TABLE_PURCHASE_META;
 		$wpdb->wpsc_visitors            = WPSC_TABLE_VISITORS;
 		$wpdb->wpsc_visitormeta         = WPSC_TABLE_VISITOR_META;
+
+		return array(
+			$wpdb->wpsc_meta               ,
+			$wpdb->wpsc_also_bought        ,
+			$wpdb->wpsc_region_tax         ,
+			$wpdb->wpsc_coupon_codes       ,
+			$wpdb->wpsc_cart_contents      ,
+			$wpdb->wpsc_claimed_stock      ,
+			$wpdb->wpsc_currency_list      ,
+			$wpdb->wpsc_purchase_logs      ,
+			$wpdb->wpsc_checkout_forms     ,
+			$wpdb->wpsc_product_rating     ,
+			$wpdb->wpsc_download_status    ,
+			$wpdb->wpsc_submitted_form_data,
+			$wpdb->wpsc_cart_itemmeta      ,
+			$wpdb->wpsc_purchasemeta       ,
+			$wpdb->wpsc_visitors           ,
+			$wpdb->wpsc_visitormeta        ,
+		);
+
+
 	}
 
 	/**
